@@ -1,0 +1,108 @@
+{% extends 'layout/admin.html' %}
+{% block title %}
+图片墙首页
+{% endblock %}
+
+{% block css %}
+<style>
+
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+//控制按钮样式
+$(function(){
+    $('.my_info').removeClass('btn-warning');
+    $('.my_info').addClass('btn-danger');
+
+//用户注册ajax提交代码
+    $('.user_edit').on('click',function(){
+            var  password1 = $('#password1').val();
+            var  truename1 = $('#truename1').val();
+            var  phone1 = $('#phone1').val();
+            var  weixin1 = $('#weixin1').val();
+            var  address1 = $('#address1').val();
+            var  sex1 = $("input[name='sex1']:checked").val();
+                $.ajax({
+                    url: "user_edit.html?p=" + password1 + "&t=" + truename1 + "&ph=" + phone1 + "&w=" + weixin1 + "&ad=" + address1+"&sex1="+sex1,
+                    type: "get",
+                    datatype: "json",
+                    success: function (data) {
+                        //将传递回来的json字符串解码程json对象
+                        var obj = eval('(' + data + ')');
+                        if (obj.code == 0) {
+                            alert(obj.message)
+                            window.location.reload();
+                        } else if (obj.code == 1) {
+                            layer.alert("格式错误，错误信息为：" + obj.message)
+                        }
+
+                    }
+                });
+    });
+
+})
+</script>
+{% endblock %}
+
+{% block button %}
+
+{% endblock %}
+
+{% block search %}
+
+{% endblock %}
+
+{% block body %}
+    {% csrf_token %}
+<div class="form-group">
+    <label for="username" class=" control-label">用户名：</label>&nbsp;&nbsp;&nbsp;
+    <div class="">
+        <input type="text" class="form-control" id="username1" disabled  value="{{ data.user_name }}" placeholder="请输入名字..."  />
+    </div>
+</div>
+ <div class="form-group">
+    <label for="password" class=" control-label">密码：</label>
+    <div class="">
+        <input type="password" class="form-control" id="password1"   value="{{ data.password }}"  placeholder="请输人密码..."  />
+    </div>
+</div>
+ <div class="form-group">
+    <label for="truename" class=" control-label">真实姓名：</label>
+    <div class="">
+        <input type="text" class="form-control" id="truename1"  value="{{ data.true_name }}"  placeholder="请输入真实姓名..."  />
+    </div>
+</div>
+ <div class="form-group">
+    <label for="sex" class=" control-label" >性别：</label>
+    <div class="">
+         <input type="radio"  id="" name="sex1"   value="0"    {% if data.sex == 0 %}checked="checked" {% endif %}  />男
+         <input type="radio"  id="" name="sex1"   value="1"   {% if data.sex == 1 %} checked="checked" {% endif %} />女
+    </div>
+</div>
+ <div class="form-group">
+    <label for="phone" class=" control-label">联系电话：</label>
+    <div class="">
+        <input type="text" class="form-control"  id="phone1"  value="{{ data.phone }}"  placeholder="请输入联系电话..."  />
+    </div>
+</div>
+ <div class="form-group">
+    <label for="phone" class=" control-label">微信：</label>
+    <div class="">
+        <input type="text" class="form-control" id="weixin1"  value="{{ data.wx }}"  placeholder="请输入微信号码..."  />
+    </div>
+</div>
+ <div class="form-group">
+    <label for="address" class=" control-label">联系地址：</label>
+    <div class="">
+        <input type="text" class="form-control" id="address1"   value="{{ data.address }}"  placeholder="请输入联系地址..."  />
+    </div>
+</div>
+    <div class="text-center">
+        <button class="btn btn-warning btn-xs user_edit">我要修改</button>
+    </div>
+{% endblock %}
+
+
+

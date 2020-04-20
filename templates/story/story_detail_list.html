@@ -1,0 +1,81 @@
+{% extends 'layout/admin.html' %}
+{% load functions %}
+{% block title %}
+文学详情展示界面
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js %}
+<script>
+//控制按钮样式
+$(function(){
+    $('.my_story').removeClass('btn-warning');
+    $('.my_story').addClass('btn-danger');
+
+     $('.submit').on('click',function(){
+        var sto_name = $('input[name="sto_name"]').val();
+        var sto_intro = $('#text_val').val();
+        var for_kind = $('#for_kind').val();
+        var sto_use = $('input[name="sto_use"]:checked').val();
+        var file= $('input[name="file"]').val();
+        {#alert(sto_name+'--'+sto_use+'--'+for_kind+'--'+file+'--'+sto_intro)#}
+       if(sto_name  && sto_intro && file   && for_kind){
+           $('#form1').submit();
+       }else{
+           alert('所有栏目不能为空！')
+           return false;
+       }
+    });
+})
+</script>
+{% endblock %}
+
+{% block button %}
+<a href="story_detail_add.html?pid={{ pid }}" class="btn btn-danger btn-xs">{{ name.sto_name }}：添加章节</a>
+{% endblock %}
+
+{% block body %}
+    <p style="display:block;height:30px;"></p>
+   <div class="row col-md-12">
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr style="font-size:14px;font-weight: bold;">
+              <td>序号</td>
+                <td>章节标题</td>
+                <td>是否上线</td>
+                <td>排序</td>
+               <td>创建时间</td>
+               <td>操作</td>
+            </tr>
+          </thead>
+          <tbody>
+          {% for item in data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.stod_title }}</td>
+                 <td>
+                    {% if item.stod_use == 1 %}下线{% else %}上线{% endif %}
+                </td>
+                <td>{{ item.stod_weight|my_str }}</td>
+                <td>{{ item.ctime }}</td>
+                <td>
+                    <a href="story_detail_edit.html?pid={{ pid }}&id={{ item.id }}&eidt=1 " class=" badge badge-warning">编辑</a>
+                    <a href="story_detail_del.html?pid={{ pid }}&id={{ item.id }} " class="badge badge-danger">删除</a>
+                </td>
+            <tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+   {#            分页#}
+            <div style="margin-top:25px;text-align: center;">
+                 <ul class="pagination pagination-sm">
+                     {{ pager.page_str|safe }}
+                </ul>
+            </div>
+</div>
+{% endblock %}

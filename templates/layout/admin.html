@@ -1,0 +1,30 @@
+{% extends 'layout/index.html' %}
+{% block content %}
+<div class="container" style="margin:30px auto">
+    <div class="row col-md-12">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <div class="text-center">
+                    {% block button %}{% endblock %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="my_admin" class="btn btn-warning btn-xs my_pic">图片墙管理</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="my_story.html" class="btn btn-warning btn-xs my_story">文学网管理</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="btn btn-warning btn-xs my_music">音乐网管理</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="btn btn-warning btn-xs my_video">视频网管理</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="index.html" class="btn btn-warning btn-xs my_file">文件共享网管理</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="my_info.html" class="btn btn-warning btn-xs my_info">个人资料</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {% block search %}{% endblock %}
+                </div>
+            </div>
+             <div class="panel-body">
+               {% block body %}{% endblock %}
+            </div>
+             <div class="panel-footer">
+                 <div class="text-center">
+                     {% block footer %}{% endblock %}
+                 </div>
+            </div>
+            <p style="display:block;height:200px;"></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

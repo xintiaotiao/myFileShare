@@ -1,0 +1,72 @@
+{% extends 'layout/admin.html' %}
+{% load functions %}
+{% block title %}
+文学详情展示界面
+{% endblock %}
+
+{% block css %}
+<link href="/static/ueditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" charset="utf-8" src="/static/ueditor/umeditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/static/ueditor/umeditor.min.js"></script>
+<script type="text/javascript" src="/static/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script>
+//控制按钮样式
+$(function(){
+    //实例化编辑器
+    var um = UM.getEditor('myEditor');
+    $('.my_story').removeClass('btn-warning');
+    $('.my_story').addClass('btn-danger');
+
+     $('.submit').on('click',function(){
+        var stod_title = $('input[name="stod_title"]').val();
+        var stod_intro = UM.getEditor('myEditor').getContent();
+        var stod_use = $('input[name="stod_use"]:checked').val();
+        {#alert(stod_title+'--'+stod_intro)#}
+       if(stod_name  && stod_intro){
+           $('#form1').submit();
+       }else{
+           alert('所有栏目不能为空！')
+           return false;
+       }
+    });
+})
+</script>
+{% endblock %}
+
+{% block button %}
+{#<a href="story_detail_add.html?pid=1" class="btn btn-danger btn-xs">为:添加章节</a>#}
+{% endblock %}
+
+{% block body %}
+    <p style="display:block;height:30px;"></p>
+<form action="story_detail_add_data.html?id={{ id }}&pid={{ pid }}&edit=1"  method="post" enctype="multipart/form-data" id="form1">
+    {% csrf_token %}
+    <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">1、章节标题</span>
+        <input type="text" name="stod_title" class="form-control" placeholder="请章节标题..." value="{{ data.stod_title }}" aria-describedby="sizing-addon2">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">2、章节排序</span>
+        <input type="text" name="stod_sort" class="form-control" placeholder="请章节排序..." value="{{ data.stod_weight|my_str }}" aria-describedby="sizing-addon2">
+    </div>
+     <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">3、是否上线</span>
+            &nbsp;&nbsp;&nbsp;<input type="radio" name="stod_use"  aria-describedby="sizing-addon2" value="0" {% if data.stod_use == 0 %} checked{% endif %}>上线
+           &nbsp;&nbsp;&nbsp;<input type="radio" name="stod_use"  aria-describedby="sizing-addon2" value="1" {% if data.stod_use == 1 %} checked{% endif %}>下线
+    </div>
+    <div class="input-group col-md-12">
+        <span class="input-group-addon" id="sizing-addon2">4、章节内容</span>
+        <textarea  name="stod_intro" style="height:300px;width:100%" id = 'myEditor' aria-describedby="sizing-addon2">{{ data.stod_content|safe }}</textarea>
+    </div>
+    <br/>
+    <div class="input-group text-center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-danger btn-xs submit">编辑章节</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="story_detail_list.html?id={{ pid }}" class="btn btn-warning btn-xs" >返回</a>
+    </div>
+
+</form>
+    <p style="display:block;height:10px;"></p>
+{% endblock %}

@@ -1,0 +1,46 @@
+'正则样式大全
+'1、\d+表示多个数字  2、\w+表示多个数字、字母或下划线  3、[\u4e00-\u9fa5]+表示多个汉字
+
+'提取字符串中的指定字符，采用正则
+Function getStr(rng As Range,matchPattern As String)
+'开始
+Dim reg As Object
+Set reg = CreateObject("VBScript.RegExp")
+With reg
+.Global = True
+
+'此处定义正则表达式，汉字范围(\u4e00-\u9fa5)+
+.Pattern = matchPattern
+
+getStr = .Execute(rng)(0)
+End With
+'结束
+End Function
+
+
+
+'查找字符串并替换
+Private Sub replaceStr()
+	'开始
+    Dim RegExp As Object
+    Dim SearchRange As Range, Cell As Range
+    
+    '此处定义正则表达式
+    Set RegExp = CreateObject("vbscript.regexp")
+    '这里定义正则的格式
+    RegExp.Pattern = "\w+"
+     
+    '此处指定查找范围
+    Set SearchRange = ActiveSheet.Range("A1:A99")
+    
+    '遍历查找范围内的单元格
+    For Each Cell In SearchRange
+        Set Matches = RegExp.Execute(Cell.Value)
+        If Matches.Count >= 1 Then
+            Set Match = Matches(0)
+            '这里实现将查找到的字符串替换为什么
+            Cell.Value = RegExp.Replace(Cell.Value, "Hello World !")
+        End If
+    Next
+    '结束
+End Sub

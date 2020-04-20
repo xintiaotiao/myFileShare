@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://F:/MiniShop/.idea/MiniShop.iml" filepath="F:/MiniShop/.idea/MiniShop.iml" />
+      <module fileurl="file://D:/test/day1/.idea/day1.iml" filepath="D:/test/day1/.idea/day1.iml" />
+      <module fileurl="file://D:/test/day2/.idea/day2.iml" filepath="D:/test/day2/.idea/day2.iml" />
+      <module fileurl="file://D:/test/fox_scrapy/.idea/fox_scrapy.iml" filepath="D:/test/fox_scrapy/.idea/fox_scrapy.iml" />
+      <module fileurl="file://F:/foxconn/.idea/foxconn.iml" filepath="F:/foxconn/.idea/foxconn.iml" />
+      <module fileurl="file://F:/pyProject/.idea/pyProject.iml" filepath="F:/pyProject/.idea/pyProject.iml" />
+    </modules>
+  </component>
+</project>

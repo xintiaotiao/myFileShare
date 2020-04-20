@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>网络爬虫测试</title>
+    <link href="/static/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script>
+        $(function(){
+            $(".fj_start").on('click',function(){
+                setInterval(function(){
+                   $.ajax({
+                        url:"py_requests",
+                        tpye:"get",
+                        success:function(data){
+                            console.log(data);
+                        }
+                    });
+                },2000);
+
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container" style="margin:50px auto">
+        <div class="row col-md-12">
+            <div>
+                <button class="btn btn-danger disabled">ajax+python爬虫实现刷取点击量</button><br/><br/>
+                <button class="btn btn-success btn-xs fj_start">开始刷取风景图点击量</button>
+                <span class="fj_value"></span>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

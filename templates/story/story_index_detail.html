@@ -1,0 +1,31 @@
+{% extends 'layout/index.html' %}
+{% block title %}
+文学网章节详情
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js %}
+
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row col-md-4 col-md-offset-4" style="margin-top:15px;">
+        <div class="text-success text-center">
+            <h3>{{ data.stod_title }}</h3><br/>
+            <span>
+                <a href="story_index_list.html?pid={{ pid }}" class="btn btn-xs btn-warning">返回文章</a>
+            </span>
+        </div>
+    </div>
+    <div class=" row col-md-12"  >
+       <span class="text-success" style="font-size:18px;line-height: 20px;letter-spacing:1px;">{{ data.stod_content|safe }}</span>
+    </div>
+    <div style="display: inline-block;height:650px;">
+    </div>
+</div>
+{% endblock %}

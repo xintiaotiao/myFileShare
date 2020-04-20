@@ -1,0 +1,270 @@
+{% extends 'layout/index.html' %}
+{% load functions %}
+{% block title %}
+图片墙首页
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js %}
+<script>
+$(function(){
+   //实现图片墙的搜索功能
+    $('.pic_search').on('click',function(){
+        var search = $('.search_val').val();
+        window.location.href = 'pic_index.html?search='+search;
+    });
+    //点击实现高清大图显示，采用layer
+    $('.img_bg').on('click',function(){
+        var path = $(this).attr('src');
+        {#alert(path);#}
+        layer.open({
+            type: 1,
+            offset: 'auto',
+            anim: 6,
+            resize:true,
+            shade: [0.8, '#393D49'],
+            title: ['高清大图', 'font-size:18px;'],
+            skin: 'demo-class',
+            area: ['1366px', '768px'],
+            content:'<img src="' + path + '"   />'
+        });
+    });
+    //实现点击一次查看详情后，点击量自动增加
+    $('.pic_hot_add').on('click',function(){
+        var pid = $(this).attr('pic-id');
+        {#alert(pid);#}
+        //ajax发送数据
+        $.ajax({
+            url:"pic_hot_add.html?pid="+pid,
+            tpye:"get",
+            success:function(data){
+
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- banner -->
+	<div class="banner">
+		<div id="kb" class="carousel kb_elastic animate_text kb_wrapper" data-ride="carousel" data-interval="6000" data-pause="hover">
+
+            <!-- Wrapper-for-Slides -->
+            <div class="carousel-inner" role="listbox" style="text-align: center">
+                {% for item in data %}
+                <!-- First-Slide -->
+                <div class="item {% if forloop.first %}active{% endif %}" {% if item.pic_kind == 3 %} style="width:35%;height:100%;text-align: center;margin-left:450px;"
+                     {% elif item.pic_kind == 2 %}style="width:50%;height:100%;text-align: center;margin-left:400px;"
+                {% else %}style=""{% endif %}>
+                    <img src="/{{ item.pic_img }}"  alt="" class="img-responsive" />
+                    <div class="carousel-caption kb_caption">
+                        <p data-animation="animated flipInX" style="color:#ff9900;font-size:16px;">Top:{{ forloop.counter }}</p>
+                        <p data-animation="animated flipInX" style="color:#ff9900">作者：{{ item.pic_user__true_name }}</p>
+                        <p data-animation="animated flipInX"style="color:#ff9900">图册名：{{ item.pic_name }}</p>
+                        <a href="pic_index_new.html?id={{ item.id }}" pic-id="{{ item.id }}" class="btn btn-xs btn-warning pic_hot_add">查看详情</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Left-Button -->
+            <a class="left carousel-control kb_control_left" href="#kb" role="button" data-slide="prev">
+				<span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+
+            <!-- Right-Button -->
+            <a class="right carousel-control kb_control_right" href="#kb" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+
+        </div>
+		<script src="/static/js/custom.js"></script>
+	</div>
+<!--banner-->
+	<!--content-->
+		<div class="content">
+			<!--banner-bottom-->
+			<div class="banner-bottom">
+{#                  <div class="col-md-1 ban-grid">#}
+{#					<div class="ban-left">#}
+{#						 <a href="javascript:void(0)" class="btn disabled">#}
+{#                            <h4 style="font-size:16px">全部：</h4>#}
+{#                        </a>#}
+{#					</div>#}
+{#					<div class="clearfix"></div>#}
+{#				</div>#}
+{#				   <div class="col-md-1 ban-grid">#}
+{#					<div class="ban-left">#}
+{#                        <a href="pic_index.html?kind=0" class="btn {% if kind == 0 %}btn-warning{% endif %}">#}
+{#                            <h4 style="font-size:16px">最热图集</h4>#}
+{#                        </a>#}
+{#					</div>#}
+{#					<div class="clearfix"></div>#}
+{#				</div>#}
+{#                 <div class="col-md-1 ban-grid">#}
+{#					<div class="ban-left">#}
+{#                        <a href="pic_index.html?kind=1" class="btn {% if kind == 1 %}btn-warning{% endif %}">#}
+{#                            <h4 style="font-size:16px">最新图集</h4>#}
+{#                        </a>#}
+{#					</div>#}
+{#					<div class="clearfix"></div>#}
+{#				</div>#}
+
+				<div class="clearfix"></div>
+			</div>
+			<!--banner-bottom-->
+
+		</div>
+		<!--content-->
+<div class="">
+{#                搜索条件#}
+                 <div class="col-md-8 col-md-offset-3 ban-grid">
+					<div class="ban-left text-center" style="text-align: center">
+                       <div class="input-group text-center" style="">
+							<span class="input-group-addon btn btn-warning pic_search"  id="basic-addon1">搜索</span>
+							<input type="text" class="form-control search_val" placeholder="条件：图册名或发布者姓名...." value="{{ search|default:'' }}" aria-describedby="basic-addon1">
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+
+
+<!--welcome-->
+			<div class="welcome-w3">
+				<div class="">  <!--取消container类-->
+					<div class="wel-grids">
+{#                        begin#}
+						<div class="col-md-3 wel-grid">
+                             {% for item in pic_data %}
+                              {% if forloop.counter|img_position  == 1 %}
+							<div class="port-7 effect-2">
+								<div class="image-box">
+                                    <img src="/{{ item.pic_img }}" class="img-responsive img_bg" style="cursor:pointer" alt="">
+								</div>
+								<div class="text-desc">
+									<p>
+                                        <span style="color:red">作者：{{ item.pic_user__true_name }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style="color:red">图册名：{{ item.pic_name }}</span>
+                                    </p>
+                                    <p>
+                                        <span style="color:red">点击量：{{ item.pic_hot }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style="color:red">评论数：{{ item.id| get_com_count }}条</span>
+                                    </p>
+                                    <p>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a href="pic_index_new.html?id={{ item.id }}" pic-id="{{ item.id }}" class="btn btn-xs btn-warning pic_hot_add">查看详情</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </p>
+								</div>
+							</div>
+                             {% endif %}
+                        {% endfor %}
+						</div>
+{#                        start#}
+
+                    {#                        begin#}
+						<div class="col-md-3 wel-grid">
+                             {% for item in pic_data %}
+                              {% if forloop.counter|img_position  == 2 %}
+							<div class="port-7 effect-2">
+								<div class="image-box">
+                                    <img src="/{{ item.pic_img }}" class="img-responsive img_bg" style="cursor:pointer" alt="">
+								</div>
+								<div class="text-desc">
+									<p>
+                                        <span style="color:red">作者：{{ item.pic_user__true_name }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style="color:red">图册名：{{ item.pic_name }}</span>
+                                    </p>
+                                    <p>
+                                        <span style="color:red">点击量：{{ item.pic_hot }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style="color:red">评论数：{{ item.id| get_com_count }}条</span>
+                                    </p>
+                                    <p>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a href="pic_index_new.html?id={{ item.id }}" pic-id="{{ item.id }}" class="btn btn-xs btn-warning pic_hot_add">查看详情</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </p>
+								</div>
+							</div>
+                             {% endif %}
+                        {% endfor %}
+						</div>
+{#                        start#}
+
+                    {#                        begin#}
+						<div class="col-md-3 wel-grid">
+                             {% for item in pic_data %}
+                              {% if forloop.counter|img_position  == 3 %}
+							<div class="port-7 effect-2">
+								<div class="image-box">
+                                    <img src="/{{ item.pic_img }}" class="img-responsive img_bg" style="cursor:pointer" alt="">
+								</div>
+								<div class="text-desc">
+									<p>
+                                        <span style="color:red">作者：{{ item.pic_user__true_name }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style="color:red">图册名：{{ item.pic_name }}</span>
+                                    </p>
+                                    <p>
+                                        <span style="color:red">点击量：{{ item.pic_hot }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style="color:red">评论数：{{ item.id| get_com_count }}条</span>
+                                    </p>
+                                    <p>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a href="pic_index_new.html?id={{ item.id }}" pic-id="{{ item.id }}" class="btn btn-xs btn-warning pic_hot_add">查看详情</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </p>
+								</div>
+							</div>
+                             {% endif %}
+                        {% endfor %}
+						</div>
+{#                        start#}
+
+                    {#                        begin#}
+						<div class="col-md-3 wel-grid">
+                             {% for item in pic_data %}
+                              {% if forloop.counter|img_position  == 0 %}
+							<div class="port-7 effect-2">
+								<div class="image-box">
+                                    <img src="/{{ item.pic_img }}" class="img-responsive img_bg" style="cursor:pointer" alt="">
+								</div>
+								<div class="text-desc">
+									<p>
+                                        <span style="color:red">作者：{{ item.pic_user__true_name }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style="color:red">图册名：{{ item.pic_name }}</span>
+                                    </p>
+                                    <p>
+                                        <span style="color:red">点击量：{{ item.pic_hot }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style="color:red">评论数：{{ item.id| get_com_count }}条</span>
+                                    </p>
+                                    <p>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a href="pic_index_new.html?id={{ item.id }}" pic-id="{{ item.id }}" class="btn btn-xs btn-warning pic_hot_add">查看详情</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </p>
+								</div>
+							</div>
+                             {% endif %}
+                        {% endfor %}
+						</div>
+{#                        start#}
+
+
+
+
+						<div class="clearfix"></div>
+					</div>
+				</div>
+{#            分页#}
+            <div style="margin-top:25px;text-align: center;">
+                 <ul class="pagination pagination-sm">
+                     {{ pager.page_str|safe }}
+                </ul>
+            </div>
+
+			</div>
+			<!--welcome-->
+
+
+
+</div>
+{% endblock %}

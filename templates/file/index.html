@@ -1,0 +1,281 @@
+
+<!--继承模板-->
+{% extends 'layout/admin.html' %}
+<!--自定义继承模板标题-->
+{% block title %}文件共享{% endblock %}
+<!--自定义继承模板css样式-->
+{% block css %}
+<style>
+       .my_page ul,.my_page li {
+            list-style: none;
+        }
+        .my_page li{
+            float:left;
+            margin:auto 15px;
+        }
+        .my_page a {
+            color:black;
+            display: inline-block;
+            width:28px;
+            height:28px;
+            line-height: 28px;
+        }
+        .show_hide{
+            display:none;
+        }
+</style>
+{% endblock %}
+<!--自定义模板内容-->
+{% block body %}
+<div class="container">
+<div class="row">
+      <div class="col-md-12 " style="text-align:center;">
+         <p class="text-success" style="font-size: 30px;font-weight: bold;">共享文件馆</p>
+         <button class = 'btn btn-danger btn-xs my_model' style="font-size: 12px;font-weight: bold;"  data-toggle="tooltip" title="Tips:IE8浏览器请使用后台上传文件，登录用户名及密码皆为：test">点我上传</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button class="btn btn-success btn-xs my_excel" data-toggle="tooltip" title="导出文件默认位置在桌面！">导出到Excel </button>
+      </div>
+</div>
+<div class="row" style="margin:25px 15px">
+      <div class="col-md-12 " style="">
+         <div class="text-success btn disabled" style="font-size: 15px;font-weight: bold;display:inline;">文件分类：</div>
+         <a class="text-success btn btn-danger " style="font-size: 15px;font-weight: bold;display:inline;" href="/index.html?q={{q}}&k=0">全部</a>
+          {% for item in kind %}
+            <a class="text-success btn kind_search  {% if item.id == k %}kind_id btn-success btn-xs{% endif %}" href="/index.html?q={{q}}&k={{item.id}}" data-id="{{item.id}}" style="font-size: 15px;font-weight: bold;display:inline;">{{item.name}}</a>
+          {% endfor %}
+      </div>
+</div>
+
+<div class="row" style="margin:40px auto">
+      <div class="col-md-12 " style="">
+            <form >
+               <div class="col-md-1">
+                  <div class="text-success btn disabled" style="font-size: 15px;font-weight: bold;display:inline;">搜索条件：</div>
+               </div>
+               <div class="col-md-3">
+                    <input type="text" class="form-control input-sm file_content" style="display:inline;" value="{{q}}"  placeholder="请输入文件名或分类名...">
+               </div>
+               <div class="col-md-2">
+                  <div class="btn btn-sm btn-danger file_search" style="display:inline;">开始搜索</div>
+               </div>
+            </form>
+      </div>
+</div>
+
+<div class="row col-md-12">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr style="font-size:14px;font-weight: bold;">
+              <td>序号</td>
+              <td>文件名称</td>
+              <td>文件大小</td>
+               <td>下载量</td>
+              <td>来源者</td>
+              <td>文件类别</td>
+               <td>创建时间</td>
+               <td>操作</td>
+            </tr>
+          </thead>
+          <tbody>
+          {% for item in data %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+              <td>{{item.file_name}}</td>
+              <td>{{item.file_size}}M</td>
+               <td>{{item.file_hot}}</td>
+              <td>{{item.file_ip}}</td>
+              <td>{{item.file_kind__name}}</td>
+               <td>{{item.file_time}}</td>
+               <td>
+                    <a href="/download.html?id={{item.id}}"  data-toggle="tooltip" title="文件简介：{{item.file_intro}}"  class="btn btn-success btn-xs">下载</a>
+                    <a href="javascript:void(0)" id-data="{{ item.id }}"   class="btn btn-danger btn-xs file_del">删除</a>
+               </td>
+            <tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+   </div>
+
+{#            分页#}
+            <div style="margin-top:25px;text-align: center;">
+                 <ul class="pagination pagination-sm">
+                     {{ pager.page_str|safe }}
+                </ul>
+            </div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">文件上传</h4>
+            </div>
+            <div class="modal-body">
+                   {% csrf_token %}
+                    <div class="form-group">
+                      <label >1、文件分类</label>
+                      <select class="form-control" name="file_kind" id="file_kind">
+                          {% for item in kind %}
+                            <option value="{{item.id}}" >{{item.name}}</option>
+                          {% endfor %}
+                      </select>
+                    </div>
+                 <div class="form-group">
+                      <label >2、文件上传：</label>
+                      <input type="file" name="file" id="file" />
+                 </div>
+                   <div class="form-group">
+                      <label>3、文件名：</label>
+                      <input type="text"  class="form-control" name="file_name"  id="file_name"/>
+                 </div>
+                  <div class="form-group">
+                      <label>4、文件介绍：</label>
+                      <textarea class="form-control " rows="6" name="file_intro" id="file_intro"></textarea>
+                 </div>
+                   <div class="form-group">
+                    <span class="text-danger error_msg"></span>
+                   </div>
+            </div>
+            <div class="modal-footer">
+                <div class="my_hide">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                     <input type="submit" class="btn btn-primary file_submit" value="上传"  />
+                </div>
+                <div class="my_show">
+
+                </div>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+</div>
+<div style="display:inline-block;height:220px;"></div>
+
+{% endblock %}
+<!--自定义继承模板js-->
+{% block js %}
+<script>
+   $(function(){
+        //隐藏注册和登录按钮
+       {#$('.my_login').css('display','none');#}
+       $('.my_reg').css('display','none');
+        $('.my_file').removeClass('btn-warning');
+    $('.my_file').addClass('btn-danger');
+      $('.table tr').on('mouseover',function(){
+          $(this).addClass('success');
+      });
+       $('.table tr').on('mouseout',function(){
+          $(this).removeClass('success');
+      });
+       //实现导出数据到excel
+       $('.my_excel').on('click',function(){
+            var qv = $('.file_content').val();
+           var kv = $('.kind_id').attr('data-id');
+           if(!kv) {
+               kv=0;
+           }
+           window.location.href = '/index.html?q='+qv+'&k='+parseInt(kv)+'&ex=1';
+       });
+      //自定义分页样式
+      $('.my_page .active').addClass('btn btn-danger btn-xs');
+      //点击实现文件上传
+//       $('.file_submit').on('click',function(){
+//           $('#file_upload').submit();
+//       });
+       //实现点击搜索
+       $('.file_search').on('click',function(){
+           var qv = $('.file_content').val();
+           var kv = $('.kind_id').attr('data-id');
+           if(!kv) {
+               kv=0;
+           }
+           window.location.href = '/index.html?q='+qv+'&k='+parseInt(kv);
+       });
+       //ajax实现文件上传
+       var pd =true;
+       $('.file_submit').on('click',function(){
+           if($("#file_kind").val() && $("#file_name").val() && $("#file_intro").val() && $("#file")[0].files[0] ){
+               //点击上传后，隐藏按钮，因为大文件上传会有等待时间，并提示正在上传
+                   if(pd){
+                       pd=false;
+                      $('.my_hide').addClass('show_hide');
+                      $('.my_show').html("<span style='font-size:16px;color:red;'>文件正在上传中，莫要关闭上传窗口，请耐心等待...</span>");
+                   }else{
+                       pd=true;
+                        $('.my_hide').removeClass('show_hide');
+                      $('.my_show').html('');
+                   }
+                   var formdata = new FormData();
+                    formdata.append("file_kind", $("#file_kind").val());
+                    formdata.append("file_name", $("#file_name").val());
+                    formdata.append("file_intro", $("#file_intro").val());
+                    formdata.append("csrfmiddlewaretoken", $("[name='csrfmiddlewaretoken']").val());
+                    formdata.append("file", $("#file")[0].files[0]);
+        //            formdata.append("file_size", $("#file")[0].files[0].size);
+                    $.ajax({
+                        url: "upload.html",
+                        type: "POST",
+                        contentType: false,
+                        processData: false,
+                        data: formdata,
+                        success: function (data) {
+                            if(data=='success'){
+                                 $('#myModal').modal('hide');
+                                {#layer.alert('恭喜，上传文件成功！');#}
+
+                            }else{
+                                layer.alert(data)
+                            }
+                        }
+                    })
+           }else{
+               layer.alert('所有栏目不能为空，请重新填写！')
+           }
+          });
+
+        //文件删除,file_del.html?id={{item.id}}
+    $('.file_del').on('click',function(){
+        var id = $(this).attr('id-data');
+         {#var name = $(this).attr('name-data');#}
+        layer.confirm('确定要删除此文件吗？',{btn:["狠心删除","先考虑下"]},function(){
+            {#layer.alert('yes');#}
+           //ajax 删除
+             $.ajax({
+                url: "file_del.html?id="+id,
+                type: "GET",
+                success: function (data) {
+                    if(data=='success'){
+                         window.location.reload()
+                    }else{
+                        alert(data);
+                    }
+                }
+            })
+        },function(){
+            {#layer.alert('no')#}
+            {#return false;#}
+        });
+    });
+
+       //鼠标移动下载上显示文件简介
+       $('.po_intro').on('')
+      $('.my_model').on('click',function(){
+          $('#myModal').modal('show');
+//          window.location.href = 'admin';
+      });
+   });
+   $(function() {
+      $('#myModal').modal('hide');
+   });
+   $(function() {
+      $('#myModal').on('hide.bs.modal',
+         function() {
+           window.location.reload();
+      })
+   });
+</script>
+{% endblock %}

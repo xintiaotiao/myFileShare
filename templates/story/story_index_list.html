@@ -1,0 +1,35 @@
+{% extends 'layout/index.html' %}
+{% block title %}
+文学网章节详情
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js %}
+
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row col-md-4 col-md-offset-4" style="margin-top:15px;">
+        <div class="text-success text-center">
+            <h3>{{ name.sto_name }}</h3><br/>
+            <p>作者：{{ name.for_user__true_name }}</p>
+        </div>
+    </div>
+    <div class="row col-md-12">
+        {% for item in data  %}
+        <div class="col-md-3" style="margin:15px auto">
+            <span class="btn  btn-xs">
+               <a href="story_index_detail.html?id={{ item.id }}&pid={{ pid }}">{{ item.stod_title }}</a>
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="display: inline-block;height:650px;">
+    </div>
+</div>
+{% endblock %}

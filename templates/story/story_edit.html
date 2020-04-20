@@ -1,0 +1,69 @@
+{% extends 'layout/admin.html' %}
+{% load functions %}
+{% block title %}
+文学编辑界面
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js %}
+<script>
+//控制按钮样式
+$(function(){
+    $('.my_story').removeClass('btn-warning');
+    $('.my_story').addClass('btn-danger');
+
+     $('.submit').on('click',function(){
+        var sto_name = $('input[name="sto_name"]').val();
+        var sto_intro = $('#text_val').val();
+        var for_kind = $('#for_kind').val();
+        var sto_use = $('input[name="sto_use"]:checked').val();
+        var file= $('input[name="file"]').val();
+        {#alert(sto_name+'--'+sto_use+'--'+for_kind+'--'+file+'--'+sto_intro)#}
+       if(sto_name  && sto_intro &&sto_use){
+           $('#form1').submit();
+       }else{
+           alert('所有栏目不能为空！')
+           return false;
+       }
+    });
+})
+</script>
+{% endblock %}
+
+{% block button %}
+{#<a href="picd_add.html?pid={{ id }}" class="btn btn-success">{{ name }}:添加图片</a>#}
+{% endblock %}
+
+{% block body %}
+    <p style="display:block;height:30px;"></p>
+<form action="story_add_data.html?id={{ data.id }}"  method="post" enctype="multipart/form-data" id="form1">
+    {% csrf_token %}
+    <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">1、作品名称</span>
+        <input type="text" name="sto_name" class="form-control" value="{{ data.sto_name }}" placeholder="请输入作品名称..." aria-describedby="sizing-addon2">
+    </div>
+     <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">2、缩略图</span>
+        <input type="file" name="file" class="form-control" placeholder="." aria-describedby="sizing-addon2">
+    </div>
+     <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">3、是否上线</span>
+            &nbsp;&nbsp;&nbsp;<input type="radio" name="sto_use"  aria-describedby="sizing-addon2" value="0" {% if data.sto_use == 0 %} checked {% endif %}>上线
+           &nbsp;&nbsp;&nbsp;<input type="radio" name="sto_use"  aria-describedby="sizing-addon2" value="1" {% if data.sto_use == 1 %} checked {% endif %}>下线
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">4、文学简介</span>
+        <textarea  name="sto_intro" style="height:150px;width:100%" id = 'text_val' aria-describedby="sizing-addon2">{{ data.sto_intro }}</textarea>
+    </div>
+    <br/>
+    <div class="input-group text-center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-danger btn-xs submit">修改作品</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="my_story.html" class="btn btn-warning btn-xs" >返回</a>
+    </div>
+
+</form>
+    <p style="display:block;height:10px;"></p>
+{% endblock %}

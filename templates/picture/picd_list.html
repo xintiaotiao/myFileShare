@@ -1,0 +1,102 @@
+{% extends 'layout/admin.html' %}
+{% block title %}
+图片墙首页
+{% endblock %}
+
+{% block css %}
+<style>
+.success{
+    background-color: lightgreen;
+}
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+//控制按钮样式
+$(function(){
+    $('.my_pic').removeClass('btn-warning');
+    $('.my_pic').addClass('btn-danger');
+
+    $('.table tr').on('mouseover',function(){
+          $(this).addClass('success');
+      });
+       $('.table tr').on('mouseout',function(){
+          $(this).removeClass('success');
+      });
+    //点击实现高清大图显示，采用layer
+    $('.img_bg').on('click',function(){
+        var path = $(this).attr('src');
+        {#alert(path);#}
+        layer.open({
+            type: 1,
+            offset: 'auto',
+            anim: 6,
+            resize:true,
+            shade: [0.8, '#393D49'],
+            title: ['高清大图', 'font-size:18px;'],
+            skin: 'demo-class',
+            area: ['1366px', '768px'],
+            content:'<img src="' + path + '"   />'
+        });
+    });
+
+
+})
+</script>
+{% endblock %}
+
+{% block button %}
+<a href="picd_add.html?pid={{ id }}" class="btn btn-success">{{ name }}:添加图片</a>
+{% endblock %}
+
+{% block body %}
+<div class="row col-md-12">
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr style="font-size:14px;font-weight: bold;">
+              <td>序号</td>
+              <td>图集名称</td>
+                <td>缩略图</td>
+                <td>封面类型</td>
+                <td>是否上线</td>
+                <td>权重</td>
+              <td>图集简介</td>
+               <td>创建时间</td>
+               <td>操作</td>
+            </tr>
+          </thead>
+          <tbody>
+          {% for item in data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.picd_name }}</td>
+                <td><img class="img_bg " src="/{{ item.picd_img }}" height="40" style="cursor: pointer" alt="查看高清" /></td>
+                <td>
+                    {% if item.picd_kind == 1 %}宽图 {% elif item.picd_kind == 2 %} 方图 {% else %}长图{% endif %}
+                </td>
+                 <td>
+                    {% if item.picd_use == 2 %}下线{% else %}上线{% endif %}
+                </td>
+                <td>{{ item.picd_weight }}</td>
+                <td>{{ item.picd_intro|slice:"15"  }}...</td>
+                <td>{{ item.ctime }}</td>
+                <td>
+                    <a href="picd_edit.html?pid={{ item.for_pic_id }}&id={{ item.id }} " class=" badge badge-warning">编辑</a>
+                    <a href="picd_del.html?pid={{ item.for_pic_id }}&id={{ item.id }} " class="badge badge-danger">删除</a>
+                </td>
+            <tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+    <ul class="pagination pagination-sm">
+         {{ pager.page_str|safe }}
+    </ul>
+{% endblock %}
+

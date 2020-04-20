@@ -1,0 +1,115 @@
+{% extends 'layout/admin.html' %}
+{% load functions %}
+{% block title %}
+图片墙首页
+{% endblock %}
+
+{% block css %}
+<style>
+.success{
+    background-color: lightgreen;
+}
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+//控制按钮样式
+$(function(){
+    $('.my_story').removeClass('btn-warning');
+    $('.my_story').addClass('btn-danger');
+
+    $('.table tr').on('mouseover',function(){
+          $(this).addClass('success');
+      });
+       $('.table tr').on('mouseout',function(){
+          $(this).removeClass('success');
+      });
+       //实现相册的搜索功能
+    $('.sto_search').on('click',function(){
+        var search = $('.search_val').val();
+        window.location.href = 'my_story.html?search='+search;
+    });
+    //文章删除
+    $('.story_del').on('click',function(){
+        var id = $(this).attr('id-data');
+         var name = $(this).attr('name-data');
+        layer.confirm('确定要删除文章-'+name+'-并删除其内的所有章节吗？',{btn:["狠心删除","先考虑下"]},function(){
+            {#layer.alert('yes');#}
+            window.location.href='story_del.html?id='+id;
+        },function(){
+            {#layer.alert('no')#}
+            {#return false;#}
+        });
+    });
+
+
+})
+</script>
+{% endblock %}
+
+{% block button %}
+<a href="story_add.html" class="btn btn-danger btn-xs">我要发布文学</a>
+{% endblock %}
+
+{% block search %}
+{#<div class="input-group col-md-6 col-md-offset-3 text-center" style="margin-top:15px;">#}
+{#    <span class="input-group-btn">#}
+{#        <button class="btn btn-warning sto_search" type="button">搜索</button>#}
+{#    </span>#}
+{#    <input type="text" class="form-control search_val" value="{{ search|default:'' }}" placeholder="请输入文学名称或分类名称...">#}
+{#</div>#}
+{% endblock %}
+
+{% block body %}
+<div class="row col-md-12">
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr style="font-size:14px;font-weight: bold;">
+              <td>序号</td>
+              <td>文学名称</td>
+                <td>缩略图</td>
+                <td>所属类别</td>
+                <td>是否上线</td>
+              <td>点击量</td>
+              <td>文学简介</td>
+               <td>创建时间</td>
+               <td>操作</td>
+            </tr>
+          </thead>
+          <tbody>
+          {% for item in data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.sto_name }}</td>
+                <td><img  src="/{{ item.sto_img }}" height="40"  alt="查看高清" /></td>
+                <td>{{ item.for_kind__sto_kind }}</td>
+                <td>
+                    {% if item.sto_use == 1 %}下线{% else %}上线{% endif %}
+                </td>
+                <td>{{ item.sto_hot }}</td>
+                <td>{{ item.sto_intro|slice:"8"  }}...</td>
+                <td>{{ item.ctime }}</td>
+                <td>
+                    <a href="story_detail_list.html?id={{ item.id }}" class=" badge badge-success">详情</a>
+                    <a href="story_edit.html?id={{ item.id }}" class=" badge badge-warning">编辑</a>
+                    <a href="javascript:void(0)" id-data="{{ item.id}}" name-data="{{ item.sto_name }}" class="badge badge-danger story_del">删除</a>
+                </td>
+            <tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block footer %}
+    <ul class="pagination pagination-sm">
+         {{ pager.page_str|safe }}
+    </ul>
+{% endblock %}
+

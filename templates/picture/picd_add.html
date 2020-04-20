@@ -1,0 +1,77 @@
+{% extends 'layout/admin.html' %}
+{% block title %}
+文学添加页面
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js %}
+<script>
+//控制按钮样式
+$(function(){
+    $('.my_story').removeClass('btn-warning');
+    $('.my_story').addClass('btn-danger');
+
+     $('.submit').on('click',function(){
+        var picd_name = $('input[name="picd_name"]').val();
+        var picd_intro = $('input[name="picd_intro"]').val();
+        var picd_weight = $('input[name="picd_weight"]').val();
+        var picd_file= $('input[name="picd_file"]').val();
+       if(picd_name  && picd_intro && picd_file && picd_weight){
+           $('form').submit();
+       }else{
+           alert('所有栏目不能为空！')
+           return false;
+       }
+    });
+})
+</script>
+{% endblock %}
+
+{% block button %}
+{#<a href="picd_add.html?pid={{ id }}" class="btn btn-success">{{ name }}:添加图片</a>#}
+{% endblock %}
+
+{% block body %}
+    <p style="display:block;height:30px;"></p>
+<form action="picd_add_data.html?pid= {{ pid }}"  method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">图片名称</span>
+        <input type="text" name="picd_name" class="form-control" placeholder="请输入图片名称..." aria-describedby="sizing-addon2">
+    </div>
+     <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">添加图片</span>
+        <input type="file" name="picd_file" class="form-control" placeholder="." aria-describedby="sizing-addon2">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">图片权重</span>
+        <input type="text" name="picd_weight" class="form-control" placeholder="请输入图片排序位置..." aria-describedby="sizing-addon2">
+    </div>
+     <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">图片类型</span>
+            &nbsp;&nbsp;&nbsp;<input type="radio" name="picd_kind"  aria-describedby="sizing-addon2" value="1" checked>宽图
+           &nbsp;&nbsp;&nbsp;<input type="radio" name="picd_kind"  aria-describedby="sizing-addon2" value="2">方图
+           &nbsp;&nbsp;&nbsp;<input type="radio" name="picd_kind"   aria-describedby="sizing-addon2" value="3">长图
+    </div>
+     <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">是否上线</span>
+            &nbsp;&nbsp;&nbsp;<input type="radio" name="picd_use"  aria-describedby="sizing-addon2" value="1" checked>上线
+           &nbsp;&nbsp;&nbsp;<input type="radio" name="picd_use"  aria-describedby="sizing-addon2" value="2">下线
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">图片简介</span>
+        <input type="text" name="picd_intro" class="form-control" placeholder="请输入图集简介..." aria-describedby="sizing-addon2">
+    </div>
+    <br/>
+    <div class="input-group text-center">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-danger btn-xs submit">添加图片</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="picd_list.html?id={{ pid }}" class="btn btn-warning btn-xs" >返回</a>
+    </div>
+
+</form>
+    <p style="display:block;height:120px;"></p>
+{% endblock %}

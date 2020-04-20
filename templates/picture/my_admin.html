@@ -1,0 +1,117 @@
+{% extends 'layout/admin.html' %}
+{% block title %}
+图片墙首页
+{% endblock %}
+
+{% block css %}
+<style>
+.success{
+    background-color: lightgreen;
+}
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+//控制按钮样式
+$(function(){
+    $('.my_pic').removeClass('btn-warning');
+    $('.my_pic').addClass('btn-danger');
+
+    $('.table tr').on('mouseover',function(){
+          $(this).addClass('success');
+      });
+       $('.table tr').on('mouseout',function(){
+          $(this).removeClass('success');
+      });
+       //实现相册的搜索功能
+    $('.pic_search').on('click',function(){
+        var search = $('.search_val').val();
+        window.location.href = 'my_admin?search='+search;
+    });
+    //点击实现高清大图显示，采用layer
+    $('.img_bg').on('click',function(){
+        var path = $(this).attr('src');
+        {#alert(path);#}
+        layer.open({
+            type: 1,
+            offset: 'auto',
+            anim: 6,
+            resize:true,
+            shade: [0.8, '#393D49'],
+            title: ['高清大图', 'font-size:18px;'],
+            skin: 'demo-class',
+            area: ['1366px', '768px'],
+            content:'<img src="' + path + '"   />'
+        });
+    });
+
+
+})
+</script>
+{% endblock %}
+
+{% block button %}
+<a href="pic_upload.html" class="btn btn-danger btn-xs">我要上传图集</a>
+{% endblock %}
+
+{% block search %}
+<div class="input-group col-md-6 col-md-offset-3 text-center" style="margin-top:15px;">
+    <span class="input-group-btn">
+        <button class="btn btn-warning pic_search" type="button">搜索</button>
+    </span>
+    <input type="text" class="form-control search_val" value="{{ search|default:'' }}" placeholder="请输入图册名称...">
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="row col-md-12">
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr style="font-size:14px;font-weight: bold;">
+              <td>序号</td>
+              <td>图集名称</td>
+                <td>缩略图</td>
+                <td>封面类型</td>
+                <td>是否上线</td>
+              <td>点击量</td>
+              <td>图集简介</td>
+               <td>创建时间</td>
+               <td>操作</td>
+            </tr>
+          </thead>
+          <tbody>
+          {% for item in data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.pic_name }}</td>
+                <td><img class="img_bg" src="/{{ item.pic_img }}" height="40" style="cursor: pointer" alt="查看高清" /></td>
+                <td>
+                    {% if item.pic_kind == 1 %}宽图 {% elif item.pic_kind == 2 %} 方图 {% else %}长图{% endif %}
+                </td>
+                <td>
+                    {% if item.pic_use == 2 %}下线{% else %}上线{% endif %}
+                </td>
+                <td>{{ item.pic_hot }}</td>
+                <td>{{ item.pic_intro|slice:"12"  }}...</td>
+                <td>{{ item.ctime }}</td>
+                <td>
+                    <a href="picd_list.html?id={{ item.id }}" class=" badge badge-success">详情</a>
+                    <a href="pic_edit.html?id={{ item.id }}" class=" badge badge-warning">编辑</a>
+                    <a href="pic_del.html?id={{ item.id }}" class="badge badge-danger">删除</a>
+                </td>
+            <tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+    <ul class="pagination pagination-sm">
+         {{ pager.page_str|safe }}
+    </ul>
+{% endblock %}
+

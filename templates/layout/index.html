@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{% block title %}{% endblock %}</title>
+<!--css-->
+<link href="/static/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+<link href="/static/css/style.css" rel="stylesheet" type="text/css" media="all" />
+<link rel="stylesheet" href="/static/css/ken-burns.css" type="text/css" media="all" />
+<link rel="stylesheet" href="/static/css/animate.min.css" type="text/css" media="all" />
+<!--css-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!--js-->
+{#<script src="/static/js/jquery.min.js"></script>#}
+<script src="/static/js/jquery-3.2.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/layer/layer.js"></script>
+<script>
+//动态获取当前系统的时间
+setInterval(function() {
+      var now = (new Date()).toLocaleString();
+      $('#current-time').text(now);
+  }, 1000);
+
+$(function(){
+      //用户登录和注册
+    $('.my_reg').on('click',function(){
+          $('#myModal').modal('show');
+      });
+
+   $('.my_login').on('click',function(){
+       $('#myModal2').modal('show');
+   });
+    //用户登录
+   $('.login').on('click',function(){
+       var username2 = $('#username2').val();
+       var password2 = $('#password2').val();
+       $.ajax({
+           url:"login.html",
+           type:"get",
+           data:{"username2":username2,"password2":password2},
+           success:function(data){
+                //将传递回来的json字符串解码程json对象
+                var obj = eval('(' + data + ')');
+               if(obj.code  ==0){
+                   $('#username2').val(null);
+                   $('#password2').val(null);
+                   window.location.reload();
+                    $('#myModal2').modal('hide');
+               }else if (obj.code ==1){
+                   alert(obj.message);
+               }
+       }
+       });
+   });
+
+   //退出用户
+    $('.logout').on('click',function(){
+        window.location.href='logout.html';
+    });
+
+   //用户注册ajax提交代码
+    $('.reg_user').on('click',function(){
+            var username = $('#username').val();
+            var  password = $('#password').val();
+            var  truename = $('#truename').val();
+            var  phone = $('#phone').val();
+            var  weixin = $('#weixin').val();
+            var  address = $('#address').val();
+            var  sex = $("input[name='sex']:checked").val();
+            var  csrfmiddlewaretoken =  $("[name='csrfmiddlewaretoken']").val();
+            if(username && password && truename&& phone&& weixin&& address){
+                  $.ajax({
+                    url:"register.html",
+                    type:"post",
+                    data:{"username":username,"password":password,"truename":truename,"phone":phone,"weixin":weixin,"address":address,"sex":sex,"csrfmiddlewaretoken":csrfmiddlewaretoken},
+                    datatype:"json",
+                    success:function(data){
+                        //将传递回来的json字符串解码程json对象
+                        var obj = eval('(' + data + ')');
+                            if(obj.code ==0){
+                                alert(obj.message)
+                                 var username = $('#username').val(null);
+                                var  password = $('#password').val(null);
+                                var  truename = $('#truename').val(null);
+                                var  phone = $('#phone').val(null);
+                                var  weixin = $('#weixin').val(null);
+                                var  address = $('#address').val(null);
+                                $('#myModal').modal('hide');
+                            }else if(obj.code ==1){
+                                alert("格式错误，错误信息为："+obj.message)
+                            }
+
+                    }
+                });
+            }else{
+               alert('所有兰埔不能为空！')
+                return  false;
+            }
+    });
+    //ajax 验证用户名是否可用
+    $('.user_con').on('click',function(){
+        var username = $('#username').val();
+        $.ajax({
+            url:"check_user.html",
+            type:"get",
+            data:{"username":username},
+            success:function(data){
+                $('.user_res').html(data);
+            }
+        });
+    });
+});
+$(function() {
+      $('#myModal').modal('hide');
+      $('#myModal2').modal('hide');
+});
+</script>
+<!--js-->
+<!--webfonts-->
+{#<link href='http://fonts.googleapis.com/css?family=Cagliostro' rel='stylesheet' type='text/css'>#}
+{#<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>#}
+<!--webfonts-->
+{% block css %}{% endblock %}
+{% block js %}{% endblock %}
+</head>
+<body>
+	<!--header-->
+		<div class="header">
+			<div class="header-top">
+				<div class="container">
+					<div class="detail">
+						<ul>
+							<li><i class="glyphicon glyphicon-warning-sign" aria-hidden="true"></i> 欢迎你，{{ request.session.true_name|default:'游客' }} ！</li>
+                            <li><i class="glyphicon glyphicon-time" aria-hidden="true"></i><span id="current-time"></span></li>
+						</ul>
+					</div>
+					<div class="indicate">
+						<p>
+                           <div class="social-icons">
+                        {% if not request.session.user_id %}
+                                <a href="javascript:void(0)" class="my_login"><i class="icon1" data-toggle="tooltips" title="登录"></i></a>
+                                <a href="javascript:void(0)" class="my_reg"><i class="icon2" data-toggle="tooltips" title="注册"></i></a>
+                        {% else %}
+                                <a href="javascript:void(0)" class="logout"><i class="icon1" data-toggle="tooltips" title="退出"></i></a>
+                                <a href="my_admin"><i class="icon3" data-toggle="tooltips" title="个人中心"></i></a>
+{#                                 <a href="my_love.html"><i class="icon4" data-toggle="tooltips" title="我的收藏"></i></a>#}
+                        {% endif %}
+                            </div>
+                        </p>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+			<div class="container">
+				<nav class="navbar navbar-default">
+					<div class="container-fluid">
+				<!---Brand and toggle get grouped for better mobile display--->
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>				  
+							<div class="navbar-brand">
+								<h1><a href="pic_index.html">Foxconn <span>Share</span></a></h1>
+							</div>
+						</div>
+
+				<!-- Collect the nav links, forms, and other content for toggling -->
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<nav class="link-effect-2" id="link-effect-2">
+								<ul class="nav navbar-nav">
+                                    <li><a href="pic_index.html" class="active"><span data-hover="图片网">图片网</span></a></li>
+									<li><a href="story_index.html"><span data-hover="文学网">文学网</span></a></li>
+									<li><a href="#"><span data-hover="音乐网">音乐网</span></a></li>
+									<li><a href="#"><span data-hover="视频网">视频网</span></a></li>
+									<li><a href="index.html"><span data-hover="文件共享网">文件共享网</span></a></li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</div>
+	<!--header-->
+    {% block content %}
+
+    {% endblock %}
+		<!---copy--->
+			<div class="copy-section">
+				<div class="container">
+					<div class="copy">
+						<p>Copyright &copy; 2018.Foxconn All rights reserved. Write by <a href="javascript:void(0)">心跳跳</a>！</p>
+					</div>
+				</div>
+			</div>
+			<!---copy--->
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">用户注册</h4>
+            </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username" class=" control-label">用户名：</label>&nbsp;&nbsp;&nbsp;
+                    <span class="btn btn-primary btn-xs user_con">验证用户名</span>&nbsp;&nbsp;&nbsp;
+                    <span class="text-warning user_res"></span>
+                    <div class="">
+                        <input type="text" class="form-control" id="username"  placeholder="请输入名字..."  />
+                    </div>
+              </div>
+                 <div class="form-group">
+                    <label for="password" class=" control-label">密码：</label>
+                    <div class="">
+                        <input type="password" class="form-control" id="password"  placeholder="请输人密码..."  />
+                    </div>
+              </div>
+                 <div class="form-group">
+                    <label for="truename" class=" control-label">真实姓名：</label>
+                    <div class="">
+                        <input type="text" class="form-control" id="truename"  placeholder="请输入真实姓名..."  />
+                    </div>
+              </div>
+                 <div class="form-group">
+                    <label for="sex" class=" control-label">性别：</label>
+                    <div class="">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio"  id="" name="sex" value="0"   />男
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio"  id="" name="sex" value="1" checked="checked"   />女
+                    </div>
+              </div>
+                 <div class="form-group">
+                    <label for="phone" class=" control-label">联系电话：</label>
+                    <div class="">
+                        <input type="text" class="form-control" id="phone"  placeholder="请输入联系电话..."  />
+                    </div>
+              </div>
+                 <div class="form-group">
+                    <label for="phone" class=" control-label">微信：</label>
+                    <div class="">
+                        <input type="text" class="form-control" id="weixin"  placeholder="请输入微信号码..."  />
+                    </div>
+              </div>
+                 <div class="form-group">
+                    <label for="address" class=" control-label">联系地址：</label>
+                    <div class="">
+                        <input type="text" class="form-control" id="address"  placeholder="请输入联系地址..."  />
+                    </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary reg_user">注册</button>
+            </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel2">用户登录界面</h4>
+            </div>
+            <div class="modal-body">
+                 <div class="form-group">
+                    <label for="username2" class=" control-label">用户名：</label>
+                    <div class="">
+                        <input type="text" class="form-control" id="username2"  placeholder="请输入名字..."  />
+                    </div>
+              </div>
+                 <div class="form-group">
+                    <label for="password2" class=" control-label">密码：</label>
+                    <div class="">
+                        <input type="password" class="form-control" id="password2"  placeholder="请输人密码..."  />
+                    </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary login">登录</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+</body>
+</html>

@@ -1,0 +1,74 @@
+{% extends 'layout/admin.html' %}
+{% block title %}
+后台图片编辑页面
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block js %}
+<script>
+//控制按钮样式
+$(function(){
+    $('.my_pic').removeClass('btn-warning');
+    $('.my_pic').addClass('btn-danger');
+    $('.test').on('click',function(){
+        var pic_name = $('input[name="pic_name"]').val();
+        var pic_intro = $('input[name="pic_intro"]').val();
+        {#alert(pic_name+'--'+pic_intro+'--'+pic_file)#}
+    });
+     $('.submit').on('click',function(){
+        var pic_name = $('input[name="pic_name"]').val();
+        var pic_intro = $('input[name="pic_intro"]').val();
+       if(pic_name  && pic_intro){
+           $('form').submit();
+       }else{
+           alert('图册名称及简介不能为空！')
+       }
+    });
+})
+</script>
+{% endblock %}
+
+{% block button %}
+<a href="pic_upload.html" class="btn btn-danger btn-xs">我要上传</a>
+{% endblock %}
+
+{% block body %}
+    <p style="display:block;height:30px;"></p>
+<form action="pic_upload_data.html?id={{ data.id }}"  method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">图集名称</span>
+        <input type="text" name="pic_name" class="form-control" placeholder="请输入图集名称..." value="{{ data.pic_name }}"  aria-describedby="sizing-addon2">
+    </div>
+     <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">图集封面</span>
+        <input type="file" name="pic_file" class="form-control" placeholder="." aria-describedby="sizing-addon2">
+    </div>
+      <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">是否上线</span>
+            &nbsp;&nbsp;&nbsp;<input type="radio" name="pic_use"  aria-describedby="sizing-addon2" value="1" {% if data.pic_kind != 2 %}checked{% endif %}>上线
+           &nbsp;&nbsp;&nbsp;<input type="radio" name="pic_use"  aria-describedby="sizing-addon2" value="2" {% if data.pic_kind == 2 %}checked{% endif %}>下线
+    </div>
+     <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">封面类型</span>
+            &nbsp;&nbsp;&nbsp;<input type="radio" name="pic_kind"  aria-describedby="sizing-addon2" value="1" {% if data.pic_kind == 1 %}checked{% endif %}>宽图
+           &nbsp;&nbsp;&nbsp;<input type="radio" name="pic_kind"  aria-describedby="sizing-addon2" value="2" {% if data.pic_kind == 2 %}checked{% endif %}>方图
+           &nbsp;&nbsp;&nbsp;<input type="radio" name="pic_kind"   aria-describedby="sizing-addon2" value="3" {% if data.pic_kind == 3 %}checked{% endif %}>长图
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="sizing-addon2">图集简介</span>
+        <input type="text" name="pic_intro" class="form-control" placeholder="请输入图集简介..." value="{{ data.pic_intro }}" aria-describedby="sizing-addon2">
+    </div>
+    <br/>
+    <div class="input-group text-center">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-danger btn-xs submit">修改</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="my_admin" class="btn btn-warning btn-xs" >返回</a>
+    </div>
+
+</form>
+    <p style="display:block;height:120px;"></p>
+{% endblock %}
